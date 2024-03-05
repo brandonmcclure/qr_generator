@@ -7,7 +7,7 @@ endif
 .SHELLFLAGS := -NoProfile -Command
 
 REGISTRY_NAME := forgejo.themongoose.xyz/
-REPOSITORY_NAME := bmcclure89/
+REPOSITORY_NAME := brandon/
 IMAGE_NAME := qr_generator
 TAG := :latest
 
