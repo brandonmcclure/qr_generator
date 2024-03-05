@@ -1,0 +1,82 @@
+---
+name: buildDockerImage
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  push:
+    branches:
+      - main
+    paths:
+      - ./
+      - .github/workflows/buildDockerImage.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ./
+      - .github/workflows/buildDockerImage.yml
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: brandonmcclure/qr_generator
+  JUST_IMAGE_NAME: qr_generator
+
+jobs:
+  buildDockerImage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Github Container registry
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
+        with:
+          registry: ghcr.io
+
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
+        with:
+          username: bmcclure89
+
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9dc751fe249ad99385a2583ee0d084c400eee04e
+        with:
+          tags: |
+            type=ref,event=pr
+            type=ref,event=branch
+            type=sha,format=long
+            type=raw,value=latest
+          images: |
+            ghcr.io/brandonmcclure/qr_generator/${{ env.IMAGE_NAME }}
+            bmcclure89/${{ env.JUST_IMAGE_NAME }}
+      - name: Build Docker image (non main branch)
+        uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56
+        if: github.ref != 'refs/heads/main'
+        with:
+          context: .
+          file: Dockerfile
+          load: true
+          push: false
+
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }} 
+      - name: Build and push Docker image (main branch)
+        uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56
+        if: github.ref == 'refs/heads/main'
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
