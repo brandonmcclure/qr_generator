@@ -12,7 +12,7 @@ IMAGE_NAME := qr_generator
 TAG := :latest
 
 .PHONY: all test clean
-all: install_reqs
+all: docker_run
 
 venv_create:
 	python -m venv ".venv"
