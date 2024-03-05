@@ -1,0 +1,4 @@
+amzqr
+gradio==4.19.2
+Pillow
+numpy
