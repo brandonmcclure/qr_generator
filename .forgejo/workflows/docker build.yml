@@ -1,0 +1,62 @@
+---
+name: Docker build image
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  push:
+    branches:
+      - main  # Trigger CI on main branch
+  pull_request:
+    branches:
+      - main  # Trigger gated pipeline on PR to main
+
+env:
+  IMAGE_NAME: qr_generator
+
+jobs:
+  build-and-push-image:
+    runs-on: docker
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: https://forgejo.themongoose.xyz/actions/checkout@v4
+
+      - name: Log in to the forgejo Container registry
+        uses: https://forgejo.themongoose.xyz/actions/login-action@5f4866a30a54f16a52d2ecb4a3898e9e424939cf
+        with:
+          registry: forgejo.themongoose.xyz/brandon
+          username: ${{ secrets.FORGEJO_DOCKER_USER }}
+          password: ${{ secrets.FORGEJO_DOCKER_TOKEN }}
+      # - name: Extract metadata (tags, labels) for Docker
+      #   id: meta
+      #   uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81
+      #   with:
+      #     tags: |
+      #       type=ref,event=pr
+      #       type=ref,event=branch
+      #       type=sha,format=long
+      #       type=raw,value=latest
+      #     images: |
+      #       forgejo.themongoose.xyz/brandon/${{ env.IMAGE_NAME }}
+      - name: Build Docker image (non main branch)
+        uses: https://forgejo.themongoose.xyz/actions/build-push-action@eb539f44b153603ccbfbd98e2ab9d4d0dcaf23a4
+        if: github.ref != 'refs/heads/main'
+        with:
+          load: false
+          push: true
+          tags: |
+            forgejo.themongoose.xyz/brandon/${{ env.IMAGE_NAME }}:ci
+      - name: Build Docker image (main branch)
+        uses: https://forgejo.themongoose.xyz/actions/build-push-action@eb539f44b153603ccbfbd98e2ab9d4d0dcaf23a4
+        if: github.ref == 'refs/heads/main'
+        with:
+          load: false
+          push: true
+          tags: |
+            forgejo.themongoose.xyz/brandon/${{ env.IMAGE_NAME }}:latest
+            forgejo.themongoose.xyz/brandon/${{ env.IMAGE_NAME }}:main
