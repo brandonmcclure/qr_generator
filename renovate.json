@@ -1,3 +1,18 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":approveMajorUpdates",
+    "group:postcss",
+    "group:linters", 
+    ":dependencyDashboard"
+  ],
+  "ignorePresets": [
+    ":semanticPrefixFixDepsChoreOthers",
+    "docker:pinDigests",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "semanticCommits": "disabled",
+  "platformAutomerge": false,
+  "prConcurrentLimit": 5
 }
