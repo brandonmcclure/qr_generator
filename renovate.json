@@ -12,6 +12,7 @@
     "docker:pinDigests",
     "helpers:pinGitHubActionDigests"
   ],
+  "gitAuthor": "Renovate Bot qr_generator <renovate@localhost>",
   "semanticCommits": "disabled",
   "platformAutomerge": false,
   "prConcurrentLimit": 5
