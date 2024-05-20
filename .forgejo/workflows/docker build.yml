@@ -32,17 +32,6 @@ jobs:
           registry: forgejo.themongoose.xyz/brandon
           username: ${{ secrets.FORGEJO_DOCKER_USER }}
           password: ${{ secrets.FORGEJO_DOCKER_TOKEN }}
-      # - name: Extract metadata (tags, labels) for Docker
-      #   id: meta
-      #   uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81
-      #   with:
-      #     tags: |
-      #       type=ref,event=pr
-      #       type=ref,event=branch
-      #       type=sha,format=long
-      #       type=raw,value=latest
-      #     images: |
-      #       forgejo.themongoose.xyz/brandon/${{ env.IMAGE_NAME }}
       - name: Build Docker image (non main branch)
         uses: https://forgejo.themongoose.xyz/actions/build-push-action@eb539f44b153603ccbfbd98e2ab9d4d0dcaf23a4
         if: github.ref != 'refs/heads/main'
