@@ -1,4 +1,4 @@
 amzqr
-gradio==4.37.1
+gradio==4.37.2
 Pillow
 numpy
