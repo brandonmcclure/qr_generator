@@ -60,7 +60,7 @@ jobs:
             ghcr.io/brandonmcclure/qr_generator/${{ env.IMAGE_NAME }}
             bmcclure89/${{ env.JUST_IMAGE_NAME }}
       - name: Build Docker image (non main branch)
-        uses: docker/build-push-action@709dde20a75aba6bd906ba678ec126ca1d2ff835
+        uses: docker/build-push-action@1a162644f9a7e87d8f4b053101d1d9a712edc18c
         if: github.ref != 'refs/heads/main'
         with:
           context: .
@@ -71,7 +71,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }} 
       - name: Build and push Docker image (main branch)
-        uses: docker/build-push-action@709dde20a75aba6bd906ba678ec126ca1d2ff835
+        uses: docker/build-push-action@1a162644f9a7e87d8f4b053101d1d9a712edc18c
         if: github.ref == 'refs/heads/main'
         with:
           context: .
