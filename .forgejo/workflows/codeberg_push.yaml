@@ -1,0 +1,26 @@
+---
+name: Codeberg Push
+
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  codeberg-push:
+    runs-on: docker
+
+    steps:
+      - name: Checkout repository
+        uses: https://forgejo.themongoose.xyz/actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: https://forgejo.themongoose.xyz/actions/repository-mirroring-action@bmcclure/main
+        with:
+          target_repo_url:
+            git@codeberg.org:bmcclure/qr_generator.git
+          ssh_private_key:                     
+            ${{ secrets.CODEBERG_SSH_PRIVATE_KEY }}
+          refs: "refs/heads/main"
