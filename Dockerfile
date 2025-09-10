@@ -1,4 +1,4 @@
-FROM python:3.13@sha256:e8fd0c972ceb973066265ed2ea7235b502c736a283993524ac58e42becd5d9f8
+FROM python:3.13@sha256:35c05b6d32b11a1a8134f35dd0db68ef6fbb21ce62934a7aec6d50977915a92c
 COPY requirements.txt .
 RUN apt-get update && \
 	apt-get install -y apt-transport-https ca-certificates
